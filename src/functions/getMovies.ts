@@ -61,11 +61,12 @@ const getMovies = async (ids: string[]) => {
   return movies;
 };
 
-export default async (length: number) => {
+export default async (length: number, setIdsDownloaded: any) => {
   const ids: any = await getIds(length);
+  setIdsDownloaded(true);
   let movies: any = await getMovies(ids);
 
-  console.log('Finished getting movies...');
+  console.log('Finished retreiving movies...');
 
   return movies;
 };

@@ -31,6 +31,8 @@ const App = () => {
   const [loaded, setLoaded] = useState(false);
   const [movies, setMovies] = useState([]);
   const [purgeMovies, setPurgeMovies] = useState(false);
+  const [idsDownloaded, setIdsDownloaded] = useState(false);
+  const [moviesDownloaded, setMoviesDownloaded] = useState(false);
 
   const updateMovies = async () => {
     await AsyncStorage.removeItem('@movies');
@@ -44,18 +46,22 @@ const App = () => {
 
       let movies: any;
 
+      setIdsDownloaded(false);
+      setMoviesDownloaded(false);
+
       if (moviesAreDownloaded != null) {
         console.log('Using local storage.');
         movies = await AsyncStorage.getItem('@movies');
         movies = await JSON.parse(movies);
       } else {
         console.log('Downloading movies...');
-        movies = await getMovies(numberOfMovies);
+        movies = await getMovies(numberOfMovies, setIdsDownloaded);
         await AsyncStorage.setItem('@movies', JSON.stringify(movies));
       }
 
       setMovies(movies);
       setPurgeMovies(false);
+      setMoviesDownloaded(true);
     };
 
     getMoviesList();
@@ -144,9 +150,15 @@ const App = () => {
         ) : null}
 
         <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-          <Text style={{fontSize: 18, marginBottom: 16}}>
-            Retrieving list...
-          </Text>
+          {!idsDownloaded ? (
+            <Text style={{fontSize: 18, marginBottom: 32}}>
+              Indexing movies...
+            </Text>
+          ) : null}
+          {!moviesDownloaded && idsDownloaded ? (
+            <Text style={{fontSize: 18, marginBottom: 32}}>Downloading...</Text>
+          ) : null}
+
           <ActivityIndicator size="large" color="#999" />
         </View>
       </>
