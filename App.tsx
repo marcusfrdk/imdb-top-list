@@ -165,8 +165,6 @@ const App = () => {
               {moviesDownloaded == 1 ? 'movie' : 'movies'}...
             </Text>
           ) : null}
-
-          <ActivityIndicator size="large" color="#999" />
         </View>
       </>
     );
@@ -174,6 +172,7 @@ const App = () => {
 };
 
 {
+  // <ActivityIndicator size="large" color="#999" />
   // <ListItem id={movies[0]} />
   /* <FlatList
   data={movieIds}
