@@ -2,20 +2,27 @@ import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
   Platform,
-  FlatList,
   ActivityIndicator,
+  FlatList,
+  ScrollView,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import axios from 'axios';
 import getMovies from './src/functions/getMovies';
 import ListItem from './src/components/ListItem';
 
 const App = () => {
+  const fakeMovie = {
+    title: 'The Shawshank Redemption',
+    released: '1996 Nov 1',
+    director: 'Marcus Fredriksson',
+    posterUrl:
+      'https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg',
+    rating: '9.2',
+  };
   const [numberOfMovies] = useState(100);
   const [isOffline, setIsOffline] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -62,7 +69,7 @@ const App = () => {
     if (movies.length == numberOfMovies) {
       setLoaded(true);
     }
-  }, [movies.length]);
+  }, [movies]);
 
   if (loaded) {
     return (
@@ -73,8 +80,12 @@ const App = () => {
         />
         <SafeAreaView>
           <Text>You are {isOffline ? 'offline' : 'online'}.</Text>
-          <ListItem movieData={movies[0]} />
         </SafeAreaView>
+        <ScrollView>
+          {movies.map((data: any, index: number) => {
+            return <ListItem key={index} movieData={data} />;
+          })}
+        </ScrollView>
       </>
     );
   } else {

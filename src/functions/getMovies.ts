@@ -40,14 +40,16 @@ const getMovies = async (ids: string[]) => {
       .then((res: any) => {
         let title = res.data.Title;
         let posterUrl = res.data.Poster;
-        let year = res.data.Year;
+        let director = res.data.Director;
         let rating = res.data.imdbRating;
+        let released = res.data.Released;
 
         let movie: Movie = {
           title,
           posterUrl,
-          year,
+          director,
           rating,
+          released,
         };
 
         console.log(`Adding movie ${title}...`);
@@ -72,6 +74,7 @@ export default async (length: number) => {
 interface Movie {
   title: string;
   posterUrl: string;
-  year: number;
   rating: string;
+  released: string;
+  director: string;
 }
