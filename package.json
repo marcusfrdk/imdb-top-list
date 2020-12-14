@@ -10,9 +10,29 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/netinfo": "^5.9.9",
+    "@react-navigation/native": "^5.8.10",
     "@react-navigation/stack": "^5.12.8",
+    "@types/cheerio": "^0.22.23",
+    "@types/fast-html-parser": "^1.0.1",
+    "@types/uuid": "^8.3.0",
+    "axios": "^0.21.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cheerio-without-node-native": "^1.0.0-rc.2",
+    "fast-html-parser": "^1.0.1",
+    "htmlparser2-without-node-native": "^3.9.2",
+    "puppeteer": "^5.5.0",
     "react": "16.13.1",
-    "react-native": "0.63.3"
+    "react-detect-offline": "^2.4.0",
+    "react-native": "0.63.3",
+    "react-native-gesture-handler": "^1.9.0",
+    "react-native-reanimated": "^1.13.2",
+    "react-native-safe-area-context": "^3.1.9",
+    "react-native-screens": "^2.16.1",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
