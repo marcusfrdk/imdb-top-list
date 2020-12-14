@@ -1,20 +1,38 @@
-import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, Text, Image} from 'react-native';
+import axios from 'axios';
 
-const ListItem = ({title, id, year, rating, imageUrl}: Props) => {
-  return <View style={styles.container}></View>;
+const ListItem = ({movieData}: Props) => {
+  console.log(movieData.posterUrl);
+
+  return (
+    <View style={styles.container}>
+      <Image
+        source={{uri: movieData.posterUrl}}
+        style={{height: 250, width: 150}}
+      />
+      <Text>Title: {movieData.title}</Text>
+      <Text>Rating: {movieData.rating}</Text>
+      <Text>Relase date: {movieData.year}</Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginBottom: 64,
+  },
 });
 
 interface Props {
+  movieData: Movie;
+}
+
+interface Movie {
   title: string;
-  id: number;
+  rating: string;
+  posterUrl: string;
   year: number;
-  rating: number;
-  imageUrl: string;
 }
 
 export default ListItem;

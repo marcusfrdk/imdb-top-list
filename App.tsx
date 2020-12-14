@@ -7,62 +7,93 @@ import {
   Text,
   StatusBar,
   Platform,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import axios from 'axios';
+import getMovies from './src/functions/getMovies';
+import ListItem from './src/components/ListItem';
 
 const App = () => {
+  const [numberOfMovies] = useState(100);
   const [isOffline, setIsOffline] = useState(false);
-  const [movieIds, setMovieIds] = useState<any>([]);
-  const [data, setData] = useState<any>(null);
-  const url = 'https://www.imdb.com/chart/top/';
+  const [loaded, setLoaded] = useState(false);
+  const [movies, setMovies] = useState([]);
 
   useEffect(() => {
+    const getIds = async () => {
+      let res: any = await getMovies(numberOfMovies);
+      setMovies(res);
+    };
+
+    getIds();
+
     // Get ids of top 100 movies
-    if (!isOffline) {
-      axios
-        .get(url)
-        .then((res) => {
-          const html = res.data;
-          const regex = /(\/title\/w{0,9})\w+/g;
-          let m;
-          let movie_ids = [];
+    // if (!isOffline) {
+    //   axios
+    //     .get(url)
+    //     .then((res) => {
+    //       const html = res.data;
+    //       const regex = /(\/title\/w{0,9})\w+/g;
+    //       let m;
+    //       let movie_ids = [];
 
-          do {
-            m = regex.exec(html);
-            if (m) {
-              movie_ids.push(m[0]);
-            }
-          } while (m);
+    //       do {
+    //         m = regex.exec(html);
+    //         if (m) {
+    //           movie_ids.push(m[0].replace('/title/', ''));
+    //         }
+    //       } while (m);
 
-          setMovieIds(movie_ids);
-        })
-        .catch((err) => console.log(err));
-    }
+    //       setMovieIds(movie_ids);
+    //     })
+    //     .catch((err) => console.log(err));
+    // }
 
     const unsubscribe = NetInfo.addEventListener((state) => {
       !state.isConnected ? setIsOffline(true) : setIsOffline(false);
     });
 
     return () => unsubscribe();
-  }, [NetInfo, movieIds, isOffline]);
+  }, [NetInfo, isOffline]);
 
-  return (
-    <>
-      <StatusBar
-        barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
-        backgroundColor="#000"
-      />
-      <SafeAreaView>
-        <Text>You are {isOffline ? 'offline' : 'online'}.</Text>
+  useEffect(() => {
+    if (movies.length == numberOfMovies) {
+      setLoaded(true);
+    }
+  }, [movies.length]);
 
-        {movieIds.map((data: any) => {
-          return <Text>{data}</Text>;
-        })}
-      </SafeAreaView>
-    </>
-  );
+  if (loaded) {
+    return (
+      <>
+        <StatusBar
+          barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
+          backgroundColor="#000"
+        />
+        <SafeAreaView>
+          <Text>You are {isOffline ? 'offline' : 'online'}.</Text>
+          <ListItem movieData={movies[0]} />
+        </SafeAreaView>
+      </>
+    );
+  } else {
+    return (
+      <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+        <Text style={{fontSize: 18, marginBottom: 16}}>Retrieving list...</Text>
+        <ActivityIndicator size="large" color="#999" />
+      </View>
+    );
+  }
 };
+
+{
+  // <ListItem id={movies[0]} />
+  /* <FlatList
+  data={movieIds}
+  renderItem={({item, index}: any) => <ListItem key={index} id={item} />}
+/>; */
+}
 
 const styles = StyleSheet.create({});
 
