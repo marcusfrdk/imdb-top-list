@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   FlatList,
   ScrollView,
+  Button,
+  Alert,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import getMovies from './src/functions/getMovies';
@@ -28,6 +30,13 @@ const App = () => {
   const [isOffline, setIsOffline] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [movies, setMovies] = useState([]);
+  const [purgeMovies, setPurgeMovies] = useState(false);
+
+  const updateMovies = async () => {
+    await AsyncStorage.removeItem('@movies');
+    setPurgeMovies(true);
+    setLoaded(false);
+  };
 
   useEffect(() => {
     const getMoviesList = async () => {
@@ -39,13 +48,14 @@ const App = () => {
         console.log('Using local storage.');
         movies = await AsyncStorage.getItem('@movies');
         movies = await JSON.parse(movies);
-        setMovies(movies);
       } else {
         console.log('Downloading movies...');
         movies = await getMovies(numberOfMovies);
-        setMovies(movies);
         await AsyncStorage.setItem('@movies', JSON.stringify(movies));
       }
+
+      setMovies(movies);
+      setPurgeMovies(false);
     };
 
     getMoviesList();
@@ -55,7 +65,7 @@ const App = () => {
     });
 
     return () => unsubscribe();
-  }, [NetInfo, isOffline]);
+  }, [NetInfo, isOffline, purgeMovies]);
 
   useEffect(() => {
     if (movies.length == numberOfMovies) {
@@ -70,6 +80,7 @@ const App = () => {
           barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
           backgroundColor="#000"
         />
+
         {isOffline ? (
           <SafeAreaView>
             <View style={styles.offline}>
@@ -80,10 +91,33 @@ const App = () => {
 
         <ScrollView>
           <SafeAreaView>
-            <View style={{padding: 16}}>
-              <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+            <View
+              style={{
+                padding: 16,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                 IMDB Top {numberOfMovies} Movies
               </Text>
+              <Button
+                title="Redownload"
+                onPress={() =>
+                  Alert.alert(
+                    'Redownload List',
+                    'You are about to redownload all the movies, this can take a while.',
+                    [
+                      {
+                        text: 'Redownload',
+                        onPress: updateMovies,
+                        style: 'destructive',
+                      },
+                      {text: 'Cancel', style: 'cancel'},
+                    ],
+                  )
+                }
+              />
             </View>
           </SafeAreaView>
 
@@ -95,10 +129,27 @@ const App = () => {
     );
   } else {
     return (
-      <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-        <Text style={{fontSize: 18, marginBottom: 16}}>Retrieving list...</Text>
-        <ActivityIndicator size="large" color="#999" />
-      </View>
+      <>
+        <StatusBar
+          barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
+          backgroundColor="#000"
+        />
+
+        {isOffline ? (
+          <SafeAreaView>
+            <View style={styles.offline}>
+              <Text style={styles.offlineText}>You are offline.</Text>
+            </View>
+          </SafeAreaView>
+        ) : null}
+
+        <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+          <Text style={{fontSize: 18, marginBottom: 16}}>
+            Retrieving list...
+          </Text>
+          <ActivityIndicator size="large" color="#999" />
+        </View>
+      </>
     );
   }
 };
