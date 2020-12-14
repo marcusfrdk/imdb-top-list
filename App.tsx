@@ -13,6 +13,7 @@ import {
 import NetInfo from '@react-native-community/netinfo';
 import getMovies from './src/functions/getMovies';
 import ListItem from './src/components/ListItem';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const App = () => {
   const fakeMovie = {
@@ -30,8 +31,21 @@ const App = () => {
 
   useEffect(() => {
     const getMoviesList = async () => {
-      let res: any = await getMovies(numberOfMovies);
-      setMovies(res);
+      const moviesAreDownloaded = await AsyncStorage.getItem('@movies');
+
+      let movies: any;
+
+      if (moviesAreDownloaded != null) {
+        console.log('Using local storage.');
+        movies = await AsyncStorage.getItem('@movies');
+        movies = await JSON.parse(movies);
+        setMovies(movies);
+      } else {
+        console.log('Downloading movies...');
+        movies = await getMovies(numberOfMovies);
+        setMovies(movies);
+        await AsyncStorage.setItem('@movies', JSON.stringify(movies));
+      }
     };
 
     getMoviesList();
