@@ -51,8 +51,7 @@ const getMovies = async (ids: string[], setProgress: any) => {
           released,
         };
 
-        // console.log(`Adding movie ${title}...`);
-        console.log(i + 1);
+        console.log(`Adding movie ${title}...`);
 
         movies.push(movie);
         setProgress(i + 1);
