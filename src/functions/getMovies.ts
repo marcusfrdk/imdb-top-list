@@ -3,7 +3,6 @@ import axios from 'axios';
 const getIds = async (maxLength: number) => {
   const url = 'https://www.imdb.com/chart/top/';
   let ids_list: any = [];
-  let movies_list: any = [];
 
   // Scrape movie IDs
   if (ids_list.length < maxLength) {

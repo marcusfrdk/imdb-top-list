@@ -23,40 +23,18 @@ const App = () => {
       'https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg',
     rating: '9.2',
   };
-  const [numberOfMovies] = useState(100);
+  const [numberOfMovies] = useState(100); // Max 250
   const [isOffline, setIsOffline] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    const getIds = async () => {
+    const getMoviesList = async () => {
       let res: any = await getMovies(numberOfMovies);
       setMovies(res);
     };
 
-    getIds();
-
-    // Get ids of top 100 movies
-    // if (!isOffline) {
-    //   axios
-    //     .get(url)
-    //     .then((res) => {
-    //       const html = res.data;
-    //       const regex = /(\/title\/w{0,9})\w+/g;
-    //       let m;
-    //       let movie_ids = [];
-
-    //       do {
-    //         m = regex.exec(html);
-    //         if (m) {
-    //           movie_ids.push(m[0].replace('/title/', ''));
-    //         }
-    //       } while (m);
-
-    //       setMovieIds(movie_ids);
-    //     })
-    //     .catch((err) => console.log(err));
-    // }
+    getMoviesList();
 
     const unsubscribe = NetInfo.addEventListener((state) => {
       !state.isConnected ? setIsOffline(true) : setIsOffline(false);
@@ -78,12 +56,25 @@ const App = () => {
           barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
           backgroundColor="#000"
         />
-        <SafeAreaView>
-          <Text>You are {isOffline ? 'offline' : 'online'}.</Text>
-        </SafeAreaView>
+        {isOffline ? (
+          <SafeAreaView>
+            <View style={styles.offline}>
+              <Text style={styles.offlineText}>You are offline.</Text>
+            </View>
+          </SafeAreaView>
+        ) : null}
+
         <ScrollView>
+          <SafeAreaView>
+            <View style={{padding: 16}}>
+              <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+                IMDB Top {numberOfMovies} Movies
+              </Text>
+            </View>
+          </SafeAreaView>
+
           {movies.map((data: any, index: number) => {
-            return <ListItem key={index} movieData={data} />;
+            return <ListItem key={index} movieData={data} index={index} />;
           })}
         </ScrollView>
       </>
@@ -106,6 +97,17 @@ const App = () => {
 />; */
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  offline: {
+    padding: 8,
+    backgroundColor: 'red',
+    alignItems: 'center',
+  },
+  offlineText: {
+    fontSize: 16,
+    color: '#FFF',
+    fontWeight: '500',
+  },
+});
 
 export default App;
