@@ -28,7 +28,7 @@ const getIds = async (maxLength: number) => {
   return ids_list;
 };
 
-const getMovies = async (ids: string[]) => {
+const getMovies = async (ids: string[], setProgress: any) => {
   let movies: any = [];
 
   for (let i = 0; i < ids.length; i++) {
@@ -51,9 +51,11 @@ const getMovies = async (ids: string[]) => {
           released,
         };
 
-        console.log(`Adding movie ${title}...`);
+        // console.log(`Adding movie ${title}...`);
+        console.log(i + 1);
 
         movies.push(movie);
+        setProgress(i + 1);
       })
       .catch((err: any) => console.log(err));
   }
@@ -61,10 +63,14 @@ const getMovies = async (ids: string[]) => {
   return movies;
 };
 
-export default async (length: number, setIdsDownloaded: any) => {
+export default async (
+  length: number,
+  setIdsDownloaded: any,
+  setMoviesDownloaded: any,
+) => {
   const ids: any = await getIds(length);
   setIdsDownloaded(true);
-  let movies: any = await getMovies(ids);
+  let movies: any = await getMovies(ids, setMoviesDownloaded);
 
   console.log('Finished retreiving movies...');
 

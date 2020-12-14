@@ -16,6 +16,7 @@ import NetInfo from '@react-native-community/netinfo';
 import getMovies from './src/functions/getMovies';
 import ListItem from './src/components/ListItem';
 import AsyncStorage from '@react-native-community/async-storage';
+import {number} from 'yargs';
 
 const App = () => {
   const fakeMovie = {
@@ -31,8 +32,8 @@ const App = () => {
   const [loaded, setLoaded] = useState(false);
   const [movies, setMovies] = useState([]);
   const [purgeMovies, setPurgeMovies] = useState(false);
-  const [idsDownloaded, setIdsDownloaded] = useState(false);
-  const [moviesDownloaded, setMoviesDownloaded] = useState(false);
+  const [idsDownloaded, setIdsDownloaded] = useState<boolean>(false);
+  const [moviesDownloaded, setMoviesDownloaded] = useState<number>(0);
 
   const updateMovies = async () => {
     await AsyncStorage.removeItem('@movies');
@@ -47,7 +48,7 @@ const App = () => {
       let movies: any;
 
       setIdsDownloaded(false);
-      setMoviesDownloaded(false);
+      setMoviesDownloaded(0);
 
       if (moviesAreDownloaded != null) {
         console.log('Using local storage.');
@@ -55,13 +56,16 @@ const App = () => {
         movies = await JSON.parse(movies);
       } else {
         console.log('Downloading movies...');
-        movies = await getMovies(numberOfMovies, setIdsDownloaded);
+        movies = await getMovies(
+          numberOfMovies,
+          setIdsDownloaded,
+          setMoviesDownloaded,
+        );
         await AsyncStorage.setItem('@movies', JSON.stringify(movies));
       }
 
       setMovies(movies);
       setPurgeMovies(false);
-      setMoviesDownloaded(true);
     };
 
     getMoviesList();
@@ -155,8 +159,11 @@ const App = () => {
               Indexing movies...
             </Text>
           ) : null}
-          {!moviesDownloaded && idsDownloaded ? (
-            <Text style={{fontSize: 18, marginBottom: 32}}>Downloading...</Text>
+          {moviesDownloaded !== numberOfMovies && idsDownloaded ? (
+            <Text style={{fontSize: 18, marginBottom: 32}}>
+              Downloaded {moviesDownloaded}/{numberOfMovies}{' '}
+              {moviesDownloaded == 1 ? 'movie' : 'movies'}...
+            </Text>
           ) : null}
 
           <ActivityIndicator size="large" color="#999" />
