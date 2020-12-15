@@ -69,13 +69,6 @@ const App = () => {
   if (loaded) {
     return (
       <>
-        <StatusBar
-          barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
-          backgroundColor="#000"
-        />
-
-        <Offline isOffline={isOffline} />
-
         <ScrollView>
           <Header
             isOffline={isOffline}
@@ -94,12 +87,11 @@ const App = () => {
   } else {
     return (
       <>
-        <StatusBar
-          barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
-          backgroundColor="#000"
+        <Header
+          isOffline={isOffline}
+          numberOfMovies={numberOfMovies}
+          updateMovies={updateMovies}
         />
-
-        <Offline isOffline={isOffline} />
 
         <Loading
           idsDownloaded={idsDownloaded}

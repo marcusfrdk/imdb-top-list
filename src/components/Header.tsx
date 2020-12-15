@@ -1,9 +1,26 @@
 import React from 'react';
-import {View, Text, Button, SafeAreaView, Image, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  SafeAreaView,
+  Image,
+  Alert,
+  Platform,
+  StatusBar,
+} from 'react-native';
+import Offline from './Offline';
 
 const Loading = ({numberOfMovies, isOffline, updateMovies}: Props) => {
   return (
     <SafeAreaView>
+      <StatusBar
+        barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
+        backgroundColor="#000"
+      />
+
+      <Offline isOffline={isOffline} />
+
       <View
         style={{
           padding: 16,
@@ -27,14 +44,14 @@ const Loading = ({numberOfMovies, isOffline, updateMovies}: Props) => {
         </View>
         {!isOffline ? (
           <Button
-            title="Redownload"
+            title="Update"
             onPress={() =>
               Alert.alert(
-                'Redownload List',
+                'Update List',
                 'You are about to redownload all the movies, this can take a while.',
                 [
                   {
-                    text: 'Redownload',
+                    text: 'Update',
                     onPress: updateMovies,
                     style: 'destructive',
                   },
