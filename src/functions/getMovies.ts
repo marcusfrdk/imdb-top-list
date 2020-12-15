@@ -4,6 +4,8 @@ const getIds = async (maxLength: number) => {
   const url = 'https://www.imdb.com/chart/top/';
   let ids_list: any = [];
 
+  console.log('Hejsan');
+
   // Scrape movie IDs
   if (ids_list.length < maxLength) {
     await axios
@@ -18,7 +20,6 @@ const getIds = async (maxLength: number) => {
           id = id[0].replace('/title/', '');
 
           if (!ids_list.includes(id)) {
-            console.log('Indexed ' + id);
             ids_list.push(id);
           }
         }

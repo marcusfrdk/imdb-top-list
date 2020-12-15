@@ -64,7 +64,7 @@ const App = () => {
     if (movies.length == numberOfMovies) {
       setLoaded(true);
     }
-  }, [movies.length]);
+  }, [movies]);
 
   if (loaded) {
     return (
