@@ -98,6 +98,7 @@ const App = () => {
           numberOfMovies={numberOfMovies}
           moviesDownloaded={moviesDownloaded}
           updateMovies={updateMovies}
+          isOffline={isOffline}
         />
       </>
     );
