@@ -101,9 +101,20 @@ const App = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                IMDB Top {numberOfMovies} Movies
-              </Text>
+              <View
+                style={{
+                  height: 40,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={require('./assets/imdb-logo.png')}
+                  style={{height: '60%', width: 50, marginRight: 8}}
+                />
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  Top {numberOfMovies} Movies
+                </Text>
+              </View>
               {!isOffline ? (
                 <Button
                   title="Redownload"

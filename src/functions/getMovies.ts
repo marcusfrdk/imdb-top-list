@@ -18,6 +18,7 @@ const getIds = async (maxLength: number) => {
           id = id[0].replace('/title/', '');
 
           if (!ids_list.includes(id)) {
+            console.log('Indexed ' + id);
             ids_list.push(id);
           }
         }
